@@ -8,8 +8,6 @@ import 'package:task_app/bloc/auth_events.dart';
 import 'package:task_app/bloc/auth_states.dart';
 import 'package:task_app/services/Authenticate_Service.dart';
 import 'package:task_app/ui/components/filled_button.dart';
-import 'package:task_app/ui/components/loader.dart';
-import 'package:task_app/ui/pages/home_page.dart';
 import 'package:task_app/ui/pages/splash.dart';
 import 'package:task_app/utils/navigator.dart';
 import '../../Functions/CommonFunctions.dart';
@@ -18,14 +16,14 @@ import '../../theme/app_colors.dart';
 import '../../utils/SizeConfig.dart';
 import '../components/text_widget.dart';
 import '../components/textfield_widget.dart';
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _HomePageState extends State<HomePage> {
 
   bool hidePassword=true;
   final TextEditingController _emailController = TextEditingController();
@@ -61,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: SizeConfig.safeBlockVertical*3,
                         ),
 
-                        TextWidget(text: "Login",fontWeight: FontWeight.w600,size: 28,),
+                        TextWidget(text: "HomePage",fontWeight: FontWeight.w600,size: 28,),
 
                         SizedBox(
                           height: SizeConfig.safeBlockVertical,
@@ -169,35 +167,10 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             children: [
 
-                              
-                            BlocConsumer<AuthBloc,AuthState>(
-                              bloc: _authBloc,
-                              listener: (BuildContext context,AuthState state){
-                                print("state : ${state.toString()}");
-                                if(state is AuthSuccess){
-                                  push(context: context, page: HomePage());
-                                  return;
-                                }
-                                else if(state is AuthFailed){
-                                  showSnackBar(context, state.errir);
-                                  return;
-                                }
-                              },
-                              builder:(context,state) {
-                                if(state is AuthLoading){
-                                  return Loader();
-                                }
-                                else{
-                                  return  SizedBox(
-                                    height: 55,
-                                    width: SizeConfig.screenWidth*0.8,
-                                    child: CustomButton(title: "Login",
-                                        onTap: loginTapped
-                                    ),
-                                  );
-                                }
-    }
-                            ),
+                               CustomButton(title: "Login",
+                                          onTap: loginTapped
+                                      ),
+
 
                               SizedBox(
                                 height: SizeConfig.safeBlockVertical*3,
@@ -341,8 +314,6 @@ class _LoginPageState extends State<LoginPage> {
               context, "Something went wrong, try again later");
         }*/
       }
-    setState(() {
-    });
     }
     
 
