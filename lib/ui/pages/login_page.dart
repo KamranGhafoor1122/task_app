@@ -1,7 +1,11 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:task_app/services/Authenticate_Service.dart';
 import 'package:task_app/ui/components/filled_button.dart';
+import '../../Functions/CommonFunctions.dart';
+import '../../model/response_model.dart';
 import '../../theme/app_colors.dart';
 import '../../utils/SizeConfig.dart';
 import '../components/text_widget.dart';
@@ -157,9 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
 
                           CustomButton(title: "Login",
-                                      onTap: (){
-
-                                  }
+                                      onTap: loginTapped
                                   ),
 
                             SizedBox(
@@ -277,16 +279,33 @@ class _LoginPageState extends State<LoginPage> {
       emptyPassword=false;
     }
 
-    if(!emptyEmail && !emptyPassword ){
-
+    if(!emptyEmail && !emptyPassword ) {
+      MyResponse response = await AuthenticateService()
+          .loginUserWithEmailPassword(
+          email: _emailController.text, password: _passwordController.text);
+      if (response.success && response.data != null) {
+        String uid = (response.data as User).uid;
+        showSnackBar(context, "Successful Login: $uid");
+      } else {
+        if (response.message == "TimeOutException") {
+          showSnackBar(context, "Ooops! Internet connection lost kindly try to reconnect to internet");
+        }
+        else if (response.message == "wrong-password") {
+          showSnackBar(
+              context, "Your password is incorrect, please try again.");
+        }
+        else if (response.message == "user-not-found") {
+          showSnackBar(
+              context, "Email address doesn't exit in system. please sign up first.");
         }
         else{
-
+          showSnackBar(
+              context, "Something went wrong, try again later");
         }
+      }
+    }
 
-        setState(() {
-
-        });
+        setState(() {});
 
     }
 

@@ -51,7 +51,10 @@ class _SplashState extends State<Splash> {
 
   void navigate() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      push(context: context, page:const LoginPage());
+      Future.delayed(Duration(seconds: 2),(){
+        push(context: context, page:const LoginPage());
+      });
+
     });
   }
 
