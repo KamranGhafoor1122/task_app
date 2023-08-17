@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
+  <g id="Group_10" data-name="Group 10" transform="translate(-11347 -7225)">
+    <circle id="Ellipse_5" data-name="Ellipse 5" cx="17.5" cy="17.5" r="17.5" transform="translate(11347 7225)" fill="#eccfc9"/>
+    <g id="weightlifting" transform="translate(11354.52 7232.5)">
+      <path id="Path_27" data-name="Path 27" d="M17.757,17.515a19.138,19.138,0,0,1-1.616,2.246L15.1,23.319a.625.625,0,1,1-1.21-.312c.9-4.326.755-3.715.864-3.977l.976-2.37a1.1,1.1,0,0,1,2.03.848Zm6.911,6.238a.624.624,0,0,1-.727-.434L22.9,19.761l-1.481-2.009a1.1,1.1,0,1,1,1.9-1.085c1.1,2.676.936,2.3,1.048,2.539,0,.041-.05-.256.792,3.808a.624.624,0,0,1-.483.739Z" transform="translate(-9.541 -11.003)" fill="#fff"/>
+      <path id="Path_28" data-name="Path 28" d="M28.614,16c-.515,8.24-.15,1.1-.468,14.21a.78.78,0,0,1-1.559.041l-.468-5.829H25.5l-.468,5.829a.78.78,0,0,1-1.559-.041c-.187-7.7-.156-5.686-.156-9.219L23,16h1.559l1.248.624L27.055,16Z" transform="translate(-15.827 -11.01)" fill="#fc4d1f"/>
+      <circle id="Ellipse_6" data-name="Ellipse 6" cx="2.183" cy="2.183" r="2.183" transform="translate(7.797)" fill="#fff"/>
+      <path id="Path_29" data-name="Path 29" d="M30.5,16A1.248,1.248,0,1,1,28,16Z" transform="translate(-19.267 -11.01)" fill="#fff"/>
+      <rect id="Rectangle_111" data-name="Rectangle 111" width="19.961" height="0.621" rx="0.31" transform="translate(0 16.533)" fill="#32313c"/>
+      <rect id="Rectangle_112" data-name="Rectangle 112" width="1.871" height="6.238" rx="0.936" transform="translate(2.495 13.723)" fill="#a0a0a0"/>
+      <rect id="Rectangle_113" data-name="Rectangle 113" width="1.871" height="6.238" rx="0.936" transform="translate(0.624 13.723)" fill="#bfbfbf"/>
+      <rect id="Rectangle_114" data-name="Rectangle 114" width="1.871" height="6.238" rx="0.936" transform="translate(17.466 19.961) rotate(180)" fill="#a0a0a0"/>
+      <rect id="Rectangle_115" data-name="Rectangle 115" width="1.871" height="6.238" rx="0.936" transform="translate(19.337 19.961) rotate(180)" fill="#bfbfbf"/>
+    </g>
+  </g>
+</svg>
