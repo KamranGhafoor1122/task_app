@@ -2,11 +2,11 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:task_app/bloc/auth_events.dart';
-import 'package:task_app/bloc/auth_states.dart';
+import 'package:task_app/bloc/auth/auth_events.dart';
+import 'package:task_app/bloc/auth/auth_states.dart';
 import 'package:task_app/model/response_model.dart';
 
-import '../services/Authenticate_Service.dart';
+import '../../services/Authenticate_Service.dart';
 
 class AuthBloc extends Bloc<AuthEvent,AuthState>{
   //AuthBloc(super.initialState);
