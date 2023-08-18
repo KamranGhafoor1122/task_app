@@ -30,20 +30,23 @@ class _SplashState extends State<Splash> {
     SizeConfig().init(context);
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            //const Spacer(flex: 4,),
-            SvgPicture.asset("assets/images/svgs/ic_app_logo.svg",),
-            SizedBox(
-                width: SizeConfig.safeBlockHorizontal*45,
-                height: SizeConfig.safeBlockVertical*15,
-                child: Image.asset("assets/images/pngs/ic_agelessHumans.png")),
+      body: Container(
+        color: AppColors.primaryOpaque,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              //const Spacer(flex: 4,),
+              SvgPicture.asset("assets/images/svgs/ic_app_logo.svg",),
+              SizedBox(
+                  width: SizeConfig.safeBlockHorizontal*45,
+                  height: SizeConfig.safeBlockVertical*15,
+                  child: Image.asset("assets/images/pngs/ic_agelessHumans.png")),
 
 
-           //const Spacer(flex: 2,),
-          ],
+             //const Spacer(flex: 2,),
+            ],
+          ),
         ),
       ),
     );
