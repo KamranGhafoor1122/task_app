@@ -6,8 +6,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_app/bloc/auth/auth_bloc.dart';
 import 'package:task_app/bloc/auth/auth_events.dart';
 import 'package:task_app/bloc/auth/auth_states.dart';
+import 'package:task_app/bloc/home/home_bloc.dart';
+import 'package:task_app/bloc/home/home_events.dart';
+import 'package:task_app/bloc/home/home_states.dart';
+import 'package:task_app/model/food.dart';
 import 'package:task_app/services/Authenticate_Service.dart';
+import 'package:task_app/services/home_service.dart';
+import 'package:task_app/ui/components/asset_image_widget.dart';
 import 'package:task_app/ui/components/filled_button.dart';
+import 'package:task_app/ui/components/loader.dart';
 import 'package:task_app/ui/pages/splash.dart';
 import 'package:task_app/utils/navigator.dart';
 import '../../Functions/CommonFunctions.dart';
@@ -25,14 +32,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  bool hidePassword=true;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final HomeBloc _homeBloc = HomeBloc(homeService: HomeService());
+  final HomeService _homeService = HomeService();
 
-  bool emptyEmail=false;
-  bool emptyPassword =false;
-  final AuthBloc _authBloc=AuthBloc(AuthenticateService());
 
+  Category? selectedCategory;
+  Cusine? selectedCusine;
 
   @override
   void initState() {
@@ -45,227 +50,118 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: Stack(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back,color: Colors.black,),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
+        automaticallyImplyLeading: false,
+        title: TextWidget(text: "Search",fontWeight: FontWeight.w800,size: 16,),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Positioned.fill(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding:const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: SizeConfig.safeBlockVertical*3,
-                        ),
-
-                        TextWidget(text: "HomePage",fontWeight: FontWeight.w600,size: 28,),
-
-                        SizedBox(
-                          height: SizeConfig.safeBlockVertical,
-                        ),
-
-                        TextWidget(text: "Hey there, welcome back!",
-                          fontWeight: FontWeight.w400,size: 14,
-
-                        ),
-
-                        SizedBox(
-                          height: SizeConfig.safeBlockVertical*8,
-                        ),
-
-                        TextFieldWidget(
-                          hintText: "Email",
-                          inputType: TextInputType.emailAddress,
-                          controller: _emailController,
-                          leading: Padding(
-                            padding: EdgeInsets.all(13),
-                            child: SvgPicture.asset("assets/images/svgs/ic_email.svg",
-                            height: 15,
-                              width: 15,
-                            ),
-                          ),
-                        ),
-                        if(emptyEmail)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 6,),
-                              TextWidget(text: "Email cannot be empty",textColor: Colors.red,size: 10,)
-                            ],
-                          ),
-
-                        SizedBox(
-                          height: SizeConfig.safeBlockVertical*3,
-                        ),
-
-                        TextFieldWidget(
-                          hintText: "Password",
-                          controller: _passwordController,
-                          inputType: TextInputType.visiblePassword,
-                          trailing: hidePassword?IconButton(icon:SvgPicture.asset("assets/images/svgs/ic_hiddenEye.svg",color: AppColors.grayText,),
-                            iconSize: 20,
-                            onPressed: (){
-                            setState(() {
-                              hidePassword=!hidePassword;
-                            });
-                          },
-                          ):IconButton(icon: Icon(Icons.remove_red_eye,color: AppColors.grayText,),
-                            iconSize: 20,
-                            onPressed: (){
-                              setState(() {
-                                hidePassword=!hidePassword;
-                              });
-                            },
-                          ),
-
-                          obscureText: hidePassword,
-                          leading: Padding(
-                            padding: EdgeInsets.all(13),
-                            child: SvgPicture.asset("assets/images/svgs/ic_password.svg",
-                              height: 15,
-                              width: 15,
-                            ),
-                          ),
-                        ),
-                        if(emptyPassword)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 6,),
-                              TextWidget(text: "Password cannot be empty",textColor: Colors.red,size: 10,)
-                            ],
-                          ),
-
-                        SizedBox(
-                          height: 6,
-                        ),
-
-                        GestureDetector(
-                          onTap: (){
-                           // push(context: context, page:const ForgotPassword());
-                          },
-                          behavior: HitTestBehavior.translucent,
-                          child: SizedBox(
-                            height: 50,
-                            child: Center(
-                              child: TextWidget(
-                                text: "Forgot your password?",
-                                textColor: AppColors.grayText,
-                              ),
-                            ),
-                          ),
-                        ),
+            SizedBox(
+              height: SizeConfig.safeBlockVertical*3,
+            ),
 
 
-                        SizedBox(
-                          height: SizeConfig.safeBlockVertical*17,
-                        ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFieldWidget(
+                    width: SizeConfig.screenWidth,
+                    height: 60,
+                    hintText: "Search",
 
+                    oncChange: (text){
+                      _homeBloc.add(HomeSearchEvent(text));
+                    },
+                    leading: Icon(Icons.search,color: Colors.black,),
 
-                        Center(
-                          child: Column(
-                            children: [
-
-                               CustomButton(title: "Login",
-                                          onTap: loginTapped
-                                      ),
-
-
-                              SizedBox(
-                                height: SizeConfig.safeBlockVertical*3,
-                              ),
-                              Row(
-                                children: [
-                                 const Expanded(child: Divider(
-                                    color: AppColors.gray,
-                                    thickness: 0.6,
-                                  ),
-                                  ),
-
-                                 const SizedBox(width: 7,),
-                                  TextWidget(text: "Or"),
-
-
-
-                                const  SizedBox(width: 7,),
-
-                                 const Expanded(child: Divider(
-                                    color: AppColors.gray,
-                                    thickness: 0.6,
-                                  ),
-                                  )
-                                ],
-                              ),
-
-                              SizedBox(
-                                height: SizeConfig.safeBlockVertical*2,
-                              ),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-
-                                  IconButton(
-                                    icon: Image.asset("assets/images/pngs/ic_google.png",),
-                                    iconSize: 50,
-                                    onPressed: null,
-                                  ),
-
-                                  IconButton(
-                                    icon: SvgPicture.asset("assets/images/svgs/ic_apple.svg"),
-                                    iconSize: 55,
-                                    onPressed: null,
-                                  ),
-
-                                  IconButton(
-                                    icon: SvgPicture.asset("assets/images/svgs/ic_facebook.svg",),
-                                    iconSize: 55,
-                                    onPressed: null,
-                                  ),
-
-                                ],
-                              ),
-
-
-
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-
-                                  TextWidget(text: "Don't have an account yet?",
-                                  size: 12,
-                                  ),
-
-                                  Container(
-                                    height: 45,
-                                    alignment: Alignment.center,
-                                    child: GestureDetector(
-                                      onTap: (){
-                                        //push(context: context, page:const RegisterTypePage());
-                                      },
-                                      behavior: HitTestBehavior.translucent,
-                                      child: TextWidget(text: " Register",
-                                        size: 12,
-                                        textColor: AppColors.primaryColor,
-                                      ),
-                                    ),
-                                  ),
-
-                                ],
-                              )
-
-                            ],
-                          ),
-                        ),
-
-
-                      ],
-                    ),
                   ),
                 ),
+                SizedBox(
+                  width: SizeConfig.safeBlockHorizontal*3,
+                ),
+
+                GestureDetector(
+                  onTap: (){
+                     showModalBottomSheet(context: context,
+                         isScrollControlled: true,
+                         shape:const RoundedRectangleBorder(
+                           borderRadius: BorderRadius.only(
+                             topLeft: Radius.circular(20),
+                             topRight: Radius.circular(20)
+                           )
+                         ),
+                         builder: (ctx)
+                     => bottomSheetUI());
+                  },
+                  behavior: HitTestBehavior.translucent,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding:const EdgeInsets.all(20),
+                    child:const Icon(Icons.filter_alt_sharp,color: Colors.white,),
+                  ),
+                ),
+
+
+              ],
+            ),
+
+            SizedBox(
+              height: SizeConfig.safeBlockVertical*3,
+            ),
+
+
+            Expanded(
+              child: BlocBuilder<HomeBloc,HomeState>(
+                bloc: _homeBloc,
+                builder: (context,state){
+                   if(state is HomeLoading){
+                      return Center(child: Loader());
+                   }
+                   else if(state is HomeInitialState){
+                     return ListView.builder(
+                       itemCount: state.foods.length,
+                       itemBuilder: (ctx,index)=> _buildListItem(state.foods[index]),
+                     );
+                   }
+                   else if(state is HomeSearchState){
+                     return ListView.builder(
+                       itemCount: state.foods.length,
+                       itemBuilder: (ctx,index)=> _buildListItem(state.foods[index]),
+                     );
+                   }
+                   else if(state is HomeFilterState){
+                     return ListView.builder(
+                       itemCount: state.foods.length,
+                       itemBuilder: (ctx,index)=> _buildListItem(state.foods[index]),
+                     );
+                   }
+                   else {
+                     return Container();
+                   }
+                },
               ),
+            )
+
+
+
+
+
           ],
         ),
       ),
@@ -273,57 +169,242 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  loginTapped()async{
-    if(_emailController.text.isEmpty){
-      emptyEmail=true;
-    }
-    else{
-      emptyEmail=false;
-    }
-    if(_passwordController.text.isEmpty){
-      emptyPassword=true;
-    }
-    else{
-      emptyPassword=false;
-    }
 
-    if(!emptyEmail && !emptyPassword ) {
-      _authBloc.add(AuthEventLogin(_emailController.text,_passwordController.text));
-      
-
-      /*MyResponse response = await AuthenticateService()
-          .loginUserWithEmailPassword(
-          email: _emailController.text, password: _passwordController.text);*/
-      /*if (response.success && response.data != null) {
-        String uid = (response.data as User).uid;
-        showSnackBar(context, "Successful Login: $uid");
-      } else {
-        if (response.message == "TimeOutException") {
-          showSnackBar(context, "Ooops! Internet connection lost kindly try to reconnect to internet");
-        }
-        else if (response.message == "wrong-password") {
-          showSnackBar(
-              context, "Your password is incorrect, please try again.");
-        }
-        else if (response.message == "user-not-found") {
-          showSnackBar(
-              context, "Email address doesn't exit in system. please sign up first.");
-        }
-        else{
-          showSnackBar(
-              context, "Something went wrong, try again later");
-        }*/
-      }
-    }
-    
 
 
   void init() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-
+      _homeBloc.add(HomeInitialEvent());
     });
   }
+
+  Widget _buildListItem(Food food) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white70
+      ),
+      child: Row(
+        children: [
+            AssetImageWidget(image: food.image,height: 120,width: 120,
+            rounded:true,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                bottomLeft: Radius.circular(15),
+              ),
+            ),
+
+          SizedBox(
+            width: SizeConfig.safeBlockHorizontal*3,
+          ),
+
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextWidget(text: food.name,maxLines: 1,textOverflow: TextOverflow.ellipsis,fontWeight: FontWeight.w700,),
+              TextWidget(text: food.category.name,maxLines: 1,textOverflow: TextOverflow.ellipsis,fontWeight: FontWeight.w700,),
+              TextWidget(text: food.cusine.name,maxLines: 1,
+                textColor: AppColors.grayText
+                ,textOverflow: TextOverflow.ellipsis,fontWeight: FontWeight.w500,size: 12,),
+              Row(
+                children: [
+                  AssetImageWidget(image: food.chef.image,circular: true,height: 30,width: 30,),
+
+                  SizedBox(
+                    width: SizeConfig.safeBlockHorizontal*2,
+                  ),
+
+                  TextWidget(text: food.chef.name,maxLines: 1,textColor: Colors.grey,),
+
+
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+
   }
+
+
+
+
+  bottomSheetUI(){
+
+
+    return StatefulBuilder(
+      builder: (ctx,innerSetState) {
+        return Container(
+          padding:const EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 10
+          ),
+
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextWidget(text: 'Filter',size: 15,fontWeight: FontWeight.w600,),
+              SizedBox(
+                height: SizeConfig.safeBlockVertical*2,
+              ),
+
+              Row(
+                children: [
+                  TextWidget(text: "Category",fontWeight: FontWeight.w600,),
+                ],
+              ),
+
+              SizedBox(
+                height: SizeConfig.safeBlockVertical*2,
+              ),
+
+              SizedBox(
+                height: 60,
+                child: ListView.separated(
+                  itemCount: _homeService.categoriesList.length,
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (ctx,index)=>SizedBox(width: 10,),
+                  itemBuilder: (ctx,index)=> GestureDetector(
+                    onTap: (){
+                      innerSetState((){
+                         selectedCategory = _homeService.categoriesList[index];
+                      });
+                    },
+                    behavior: HitTestBehavior.translucent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(15),
+                        color: selectedCategory == null ? Colors.white:
+                            selectedCategory!.id == _homeService.categoriesList[index].id ? AppColors.primaryColor : Colors.white
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                      child: TextWidget(
+                        text: _homeService.categoriesList[index].name,
+                        textColor:  selectedCategory == null ? AppColors.darkText:
+                        selectedCategory!.id == _homeService.categoriesList[index].id ? Colors.white : AppColors.darkText
+
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: SizeConfig.safeBlockVertical*2,
+              ),
+
+
+              Row(
+                children: [
+                  TextWidget(text: "Cusine",fontWeight: FontWeight.w600,),
+                ],
+              ),
+
+
+              SizedBox(
+                height: SizeConfig.safeBlockVertical*2,
+              ),
+              Wrap(
+                direction: Axis.horizontal,
+                spacing: 15,
+                children: _homeService.cusineList.map((e) => InkWell(
+                  onTap: (){
+                    innerSetState((){
+                      selectedCusine = e;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      bottom: SizeConfig.safeBlockVertical*2
+                    ),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(15),
+                        color: selectedCusine == null ? Colors.white:
+                            selectedCusine!.id == e.id ? AppColors.primaryColor:Colors.white
+                    ),
+                    padding:const EdgeInsets.symmetric(horizontal: 25,vertical: 20),
+                    child: TextWidget(
+                      text: e.name,
+                      textColor: selectedCusine == null ? AppColors.darkText:
+                      selectedCusine!.id == e.id ? AppColors.white:AppColors.darkText,
+                    ),
+                  ),
+                ) ).toList(),
+              ),
+
+              SizedBox(
+                height: 50,
+
+
+
+               /* ListView.builder(
+                  itemCount: _homeService.cusineList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (ctx,index)=> ,
+                ),*/
+              ),
+
+
+
+              SizedBox(
+                height: SizeConfig.safeBlockVertical*3,
+              ),
+
+
+              SizedBox(
+                width: SizeConfig.screenWidth*0.75,
+                height: 55,
+                child: CustomButton(
+                  title: "Apply Filter",
+                  onTap: (){
+
+                    Navigator.pop(context);
+                    _homeBloc.add(HomeFilterEvent(category: selectedCategory,cusine: selectedCusine));
+
+
+                  },
+                )
+              ),
+
+
+              SizedBox(
+                height: SizeConfig.safeBlockVertical*3,
+              ),
+
+
+              SizedBox(
+                  width: SizeConfig.screenWidth*0.75,
+                  height: 55,
+                  child: CustomButton(
+                    title: "Clear Filter",
+                    filledColor: AppColors.gray,
+                    onTap: (){
+                      Navigator.pop(context);
+                      innerSetState((){
+                        selectedCategory = null;
+                        selectedCusine=null;
+                      });
+                      _homeBloc.add(HomeFilterEvent(category: selectedCategory,cusine: selectedCusine));
+
+
+                    },
+                  )
+              ),
+            ],
+          ),
+
+        );
+      }
+    );
+  }
+
+  }
+
+
 
 
 

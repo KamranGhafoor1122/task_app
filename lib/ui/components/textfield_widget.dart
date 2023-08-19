@@ -91,6 +91,7 @@ class TextFieldWidget extends StatelessWidget {
            // validator: (input)=>onValidate!=null?onValidate!(input??""):null,
             onChanged: (input)=>oncChange!=null?oncChange!(input):null,
             keyboardType: inputType,
+            autofocus: false,
             obscureText: obscureText??false,
             cursorColor: cursorColor ?? AppColors.darkText,
             decoration: InputDecoration(

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_app/bloc/auth/auth_bloc.dart';
+import 'package:task_app/bloc/home/home_bloc.dart';
 import 'package:task_app/services/Authenticate_Service.dart';
+import 'package:task_app/services/home_service.dart';
 import 'package:task_app/ui/pages/splash.dart';
 
 Future<void> main() async {
@@ -38,6 +40,9 @@ class MyApp extends StatelessWidget {
           providers: [
             BlocProvider<AuthBloc>(
               create: (BuildContext context) => AuthBloc(AuthenticateService()),
+            ),
+            BlocProvider<HomeBloc>(
+              create: (BuildContext context) => HomeBloc(homeService: HomeService()),
             ),
           ],
           child: Splash()),
